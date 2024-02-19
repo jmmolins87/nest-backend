@@ -57,10 +57,6 @@ export class AuthService {
   }
   
   // * 2- Guardar usuario
-  async register(): Promise<LoginResponse> {
-    return 
-  }
-
   async login( loginDto: LoginDto ): Promise<LoginResponse> {
     
     const { email, password } = loginDto;
@@ -72,7 +68,7 @@ export class AuthService {
     }
     // * Verificamos el password
     if( !bcryptjs.compareSync( password, user.password )) {
-      throw new UnauthorizedException( 'Not valid credentials - password' );
+      throw new UnauthorizedException( 'Not valid credentials - password');
     }
 
     const { password:_, ...rest } = user.toJSON();

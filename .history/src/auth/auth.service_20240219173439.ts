@@ -57,10 +57,6 @@ export class AuthService {
   }
   
   // * 2- Guardar usuario
-  async register(): Promise<LoginResponse> {
-    return 
-  }
-
   async login( loginDto: LoginDto ): Promise<LoginResponse> {
     
     const { email, password } = loginDto;
