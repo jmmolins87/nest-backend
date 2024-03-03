@@ -12,14 +12,18 @@ import { Model } from 'mongoose';
 
 import * as bcryptjs from 'bcryptjs';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { LoginDto } from './dto/login.dto';
+import { 
+  CreateUserDto, 
+  UpdateAuthDto, 
+  LoginDto, 
+  RegisterUserDto 
+} from './dto';
 
 import { User } from './entities/user.entity';
 
 import { JWTpayload } from './interfaces/jwt-payload';
 import { LoginResponse } from './interfaces/login-response';
+
 
 @Injectable()
 export class AuthService {
@@ -45,8 +49,6 @@ export class AuthService {
       const { password:_, ...user } = newUser.toJSON();
       return user;
       
-      
-      
     } catch (error) {
       if( error.code === 11000 ) {
         throw new BadRequestException(`${ CreateUserDto.email } already exists!`)
@@ -57,8 +59,14 @@ export class AuthService {
   }
   
   // * 2- Guardar usuario
-  async register(): Promise<LoginResponse> {
-    return 
+  async register( registerUserDto: RegisterUserDto ): Promise<LoginResponse> {
+
+    const user = await this.create( registerUserDto );
+
+    return {
+      user,
+      token: this.getJWToken({ id: user._id })
+    }
   }
 
   async login( loginDto: LoginDto ): Promise<LoginResponse> {
@@ -89,8 +97,15 @@ export class AuthService {
     return token;
   }
   
-  findAll() {
-    return `This action returns all auth`;
+  findAll(): Promise<User[]> {
+    return this.userModel.find();
+  }
+
+  async findUserById( id: string ) {
+    const user = await this.userModel.findById( id );
+    const { password, ...rest } = user.toJSON();
+
+    return rest;
   }
 
   findOne(id: number) {

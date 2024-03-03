@@ -4,6 +4,7 @@
 /build
 /mongo/
 .env
+/.history
 
 # Logs
 logs
